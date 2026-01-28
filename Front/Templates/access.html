@@ -7,12 +7,50 @@
    
     <script>
 
-      var form_html_eleve = "<form>Identification élève<fieldset><p>nom  d'utilisateur<input type = 'text'> </input></p><p>mot de passe<input type = 'text'> </input></P></fieldset></form>"
+      var form_html_eleve = "<form>Identification élève<fieldset><p>nom  d'utilisateur<input type = 'text'> </input></p><p>mot de passe<input type = 'text'> </input></P></fieldset>click to close</form>"
       
-      var form_html_prof = "<form>Identification Professeur<fieldset><p>nom  d'utilisateur<input type = 'text'> </input></p><p>mot de passe<input type = 'text'> </input></P></fieldset></form>"
+      var form_html_prof = "<form>Identification Professeur<fieldset><p>nom  d'utilisateur<input type = 'text'> </input></p><p>mot de passe<input type = 'text'> </input></P></fieldset>click to close</form>"
       
-      var form_html_admin = "<form>Identification Administrateur<fieldset><p>nom  d'utilisateur<input type = 'text'> </input></p><p>mot de passe<input type = 'text'> </input></P></fieldset></form>"
+      var form_html_admin = "<form>Identification Administrateur<fieldset><p>nom  d'utilisateur<input type = 'text'> </input></p><p>mot de passe<input type = 'text'> </input></P></fieldset>click to close</form>"
 
+      var open_eleve = false
+      
+      function eleve_open_close() {
+        if (open_eleve == false){
+          open_eleve = true
+          document.getElementById("eleve").innerHTML = form_html_eleve
+        }
+        else {
+          open_eleve = false 
+          document.getElementById("eleve").innerHTML = "eleve"
+        }
+      }
+      
+      var open_prof = false
+      
+      function prof_open_close() {
+        if (open_prof == false){
+          open_prof = true
+          document.getElementById("prof").innerHTML = form_html_prof
+        }
+        else {
+          open_prof = false 
+          document.getElementById("prof").innerHTML = "prof"
+        }
+      }
+      
+      var open_admin = false
+      
+      function admin_open_close() {
+        if (open_admin == false){
+          open_admin = true
+          document.getElementById("admin").innerHTML = form_html_admin
+        }
+        else {
+          open_admin = false 
+          document.getElementById("admin").innerHTML = "admin"
+        }
+      }
         
         
     </script>
@@ -35,18 +73,13 @@
   
   <h1>bienvenue</h1>
   
-  <div class = "profil" id = "eleve" onclick =  "this.innerHTML = form_html_eleve" >eleve</div>
+  <div class = "profil" id = "eleve" onclick =  "eleve_open_close()" >eleve</div>
   
-  <div class = "profil" id = "prof"  onclick =  "this.innerHTML = form_html_prof" >prof</div>
+  <div class = "profil" id = "prof"  onclick =  "prof_open_close()" >prof</div>
   
-  <div class = "profil" id = "admin"  onclick =  "this.innerHTML = form_html_admin">admin</div>
+  <div class = "profil" id = "admin" onclick =  "admin_open_close()">admin</div>
 
 </body>
 
 
-
-<<<<<<< HEAD
 </html>
-=======
-</html>
->>>>>>> c92e853a6ce6258631d59a0c4995efde29e5d2d0
