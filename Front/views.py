@@ -1,9 +1,7 @@
 import sqlite3
 from flask import Flask
 from flask import render_template, request, redirect, url_for, g
-app = Flask(__name__)
-
-app = Flask(__name__)
+app = Flask(__name__, template_folder = "./Templates", static_folder='./Styles')
 
 DATABASE = "../Back/ectoplase_bdr.db"
 
@@ -35,13 +33,6 @@ def close_connection(exception):
 
 @app.route('/')
 def index():
-    #
-    #
-    return render_template("./Templates/access.html")
-
-
-@app.route('/eleves')
-def foo():
-    pass
+    return render_template("access.html", questions=questions)
 
 app.run(debug=False)
