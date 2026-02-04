@@ -7,11 +7,11 @@
    
     <script>
 
-      var form_html_eleve = "<form>Identification élève<fieldset><p>nom  d'utilisateur<input type = 'text'> </input></p><p>mot de passe<input type = 'text'> </input></P></fieldset>click to close</form>"
+      var form_html_eleve = "<form name='recherche_classe' class='recherche' action='http://127.0.0.1:5000/eleves' method='POST'>Identification élève<fieldset><p>nom  d'utilisateur<input type = 'text'> </input></p><p>mot de passe<input type = 'text'> </input></P></fieldset>click to close </form>"
       
-      var form_html_prof = "<form>Identification Professeur<fieldset><p>nom  d'utilisateur<input type = 'text'> </input></p><p>mot de passe<input type = 'text'> </input></P></fieldset>click to close</form>"
+      var form_html_prof = "<form>Identification Professeur<fieldset><p>nom  d'utilisateur<input type = 'text'> </input></p><p>mot de passe<input type = 'text'> </input></P></fieldset>click to close </form>"
       
-      var form_html_admin = "<form>Identification Administrateur<fieldset><p>nom  d'utilisateur<input type = 'text'> </input></p><p>mot de passe<input type = 'text'> </input></P></fieldset>click to close</form>"
+      var form_html_admin = "<form>Identification Administrateur<fieldset><p>nom  d'utilisateur<input type = 'text'> </input></p><p>mot de passe<input type = 'text'> </input></P></fieldset>click to close </form>"
 
       var open_eleve = false
       
@@ -21,8 +21,8 @@
           document.getElementById("eleve").innerHTML = form_html_eleve
         }
         else {
-          open_eleve = false 
-          document.getElementById("eleve").innerHTML = "eleve"
+        //  open_eleve = false 
+        //  document.getElementById("eleve").innerHTML = "eleve"
         }
       }
       
@@ -83,3 +83,4 @@
 
 
 </html>
+
