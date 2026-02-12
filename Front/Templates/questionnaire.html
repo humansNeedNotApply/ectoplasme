@@ -2,33 +2,45 @@
     <head>
         <meta charset = 'utf-8'>
     </head>
-
-
-    <script>
-
-    </script>
-
     <style>
 
     </style>
 
+    <script>
 
-    <body>
-        
-      <div class = question>QUESTION N° {{n}}
-        <form>
-          <fieldset>
-            <select>
-            {% for i in nb_options %}
-              <option> option </option>
-            {% endfor %}
-            </select>
-          </fieldset>
-        </form>
-      </div>
-      
-    </body>
+const dict_question1 = {id_question: 1, intitule: 'blabla1', liste_reponse: [1, 2, 3], explication: 'caca'};
+const dict_question2 = {id_question: 2, intitule: 'blabla2', liste_reponse: ['bjr', 'caca', 'bla', 'blyat'], explication: 'caca'};
+const ldq = [dict_question1, dict_question2];
+
+// ldq = liste dict questions, ce sera la liste de dictionaires recues du python
 
 
-</html>
+function generer_quiz() {
+let k = 0;
+while (k <= ldq.length + 1) {
+   document.write("<div id = 'question "+ ldq[k].id_question + "'><form> <h2>question numero" + ldq[k].id_question  + "</h2><p>" + ldq[k].intitule + " </p><form>");
+   let ix = 0
+   while (ix < ldq[k].liste_reponse.length) {
+      let i = ldq[k].liste_reponse[ix]
+      document.write("<input type='radio' id="+ ix +" name="+ k +" value="+ ix +"> <label for= "+ ix +"> "+ i + "</label><br>");
+      ix++
+   };
+   document.write("</form></div>");
+   k++;
+};
+};
+
+generer_quiz()
+
+    </script>
+</head>
+  
+  
+  
+<body>
+
+</body>
+  
+  
+</html> 
 
