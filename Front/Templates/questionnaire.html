@@ -12,13 +12,15 @@ const dict_question1 = {id_question: 1, intitule: 'blabla1', liste_reponse: [1, 
 const dict_question2 = {id_question: 2, intitule: 'blabla2', liste_reponse: ['bjr', 'caca', 'bla', 'blyat'], explication: 'caca'};
 const ldq = [dict_question1, dict_question2];
 
-// ldq = liste dict questions, ce sera la liste de dictionaires recues du python
-
+// ldq = liste dict questions, ce sera la liste de dictionaires recue du python
+//pour les inputs radio (c'est les checkbox) il faut éviter de modifier les id et les noms. Il faut qu'elles aient toutes les mêmes id, sinon on ne peut pas en selectioner qu'une parmi la liste
+//pour le css: les id des divs (normalement) se présntent sous la forme "question1", "question2"... mais le numero est l'id de la question
+//en fonction de ce que renvoie le formulaire, il faudra modifier encore un peu les noms et les id des éléments html, pour éviter les confusions
 
 function generer_quiz() {
 let k = 0;
 while (k <= ldq.length + 1) {
-   document.write("<div id = 'question "+ ldq[k].id_question + "'><form> <h2>question numero" + ldq[k].id_question  + "</h2><p>" + ldq[k].intitule + " </p><form>");
+   document.write("<div id = 'question "+ ldq[k].id_question + "'><form> <h2>Question numero " + k+1  + "</h2><p>" + ldq[k].intitule + " </p><form>");
    let ix = 0
    while (ix < ldq[k].liste_reponse.length) {
       let i = ldq[k].liste_reponse[ix]
