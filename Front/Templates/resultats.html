@@ -1,25 +1,54 @@
-<html>
+<!DOCTYPE html>
+<html lang="fr">
   
 <head> <title> Vos résultats </title>
 
   <meta charset = 'utf-8'>
-    <style>
-      
-    </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script>
-      
-    </script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='eleve.css') }}">
 
 
 </head>
 
 <body>
 
- <div> vos résultats </div>
+  <div class = "container">
+    <h1> Vos résultats </h1>
+    <div class = "result-box">
+        <p>
+          Pourcentage de réussite :
+            <strong>{{ pourcentage }}%</strong>
+        </p>
+
+        <p>
+           Votre Meilleur score : 
+            <strong>{{ meilleur_score }}</strong>
+        </p>
+    </div>
 
 
-  
+
+
+
+  </div>
+  <div class="buttons">
+
+    <a href = "/questionnaire">
+      <button> Recommencer le quiz</button>
+    </a>
+
+    <a href = "/leaderboard">
+      <button> Voir le classement</button>
+    </a>
+  </div>
+
 </body>
-  
 </html>
+    
+
+ 
+
+
+  
+
