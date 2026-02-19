@@ -39,3 +39,17 @@ for (const it of items) {
 }
 
 toggleOne("btn-eleve");
+
+document.querySelectorAll(".lang").forEach(container => {
+  const targetId = container.dataset.target;
+  const hidden = document.getElementById(targetId);
+  if (!hidden) return;
+  const btns = container.querySelectorAll(".lang__btn");
+
+  btns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const lang = btn.dataset.lang;
+      window.location.href = "/set_lang/" + lang;
+    });
+  });
+});
