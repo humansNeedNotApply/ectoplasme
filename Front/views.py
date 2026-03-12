@@ -5,7 +5,7 @@ from flask import Flask, render_template, request, redirect, url_for, g, session
 
 app = Flask(
     __name__,
-    template_folder="templates",
+    template_folder="Templates",
     static_folder="static",
     static_url_path="/static"
 )
@@ -66,6 +66,32 @@ def connexion_post():
 
     return f"Ok pour role={role}, email={email}, lang={lang}"
 
+
+@app.route('/questionnaire', methods=['GET'])
+def questionnaire():
+    quest_req = query_db("SELECT * FROM Questions")
+    questions = [{'id_question': x['id_question'], 'liste_niveaux': x['liste_niveaux'], 'indice_reponse': x['indice_reponse']} for x in quest_req]
+    print(questions)
+
+    if (request.args.get("lang") == "fr"):
+        questions_lang = [{'id_question': x['id_question'], 'intitule': x['intitule'], 'liste_reponses': x['liste_reponses'], 'explication': x['explication']} for x in query_db("SELECT * FROM Questions_FR")]
+    else:
+        questions_lang = [{'id_question': x['id_question'], 'intitule': x['intitule'], 'liste_reponses': x['liste_reponses'], 'explication': x['explication']} for x in query_db("SELECT * FROM Questions_EN")]
+    print(questions_lang)
+    return render_template("questionnaire.html", questions=questions, questions_lang=questions_lang)
+
+
+@app.route('/resultats', methods=['GET'])
+def resultats():
+    solutions = request.form.get("reponses")
+    
+    return render_template("resultats.html")
+
+
+@app.route('/leaderboard')
+def leaderboard():
+    classes = [{'classe': x['nom'] + x['numero'], 'somme': query_db("SELECT SUM (Elèves.meilleur_score) FROM Elèves JOIN ON Classes WHERE Elèves.id_classe = ?", [x['id_classe']])} for x in query_db("SELECT * FROM Classes")]
+    return render_template("leaderboard.html", classes=classes)
 
 
 @app.get("/")
