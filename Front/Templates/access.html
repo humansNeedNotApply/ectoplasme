@@ -1,84 +1,159 @@
-<html>
- <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   
-   
-   
-    <script>
-
-      var form_html_eleve = "<form>Identification élève<fieldset><p>nom  d'utilisateur<input type = 'text'> </input></p><p>mot de passe<input type = 'text'> </input></P></fieldset>click to close</form>"
-      
-      var form_html_prof = "<form>Identification Professeur<fieldset><p>nom  d'utilisateur<input type = 'text'> </input></p><p>mot de passe<input type = 'text'> </input></P></fieldset>click to close</form>"
-      
-      var form_html_admin = "<form>Identification Administrateur<fieldset><p>nom  d'utilisateur<input type = 'text'> </input></p><p>mot de passe<input type = 'text'> </input></P></fieldset>click to close</form>"
-
-      var open_eleve = false
-      
-      function eleve_open_close() {
-        if (open_eleve == false){
-          open_eleve = true
-          document.getElementById("eleve").innerHTML = form_html_eleve
-        }
-        else {
-          open_eleve = false 
-          document.getElementById("eleve").innerHTML = "eleve"
-        }
-      }
-      
-      var open_prof = false
-      
-      function prof_open_close() {
-        if (open_prof == false){
-          open_prof = true
-          document.getElementById("prof").innerHTML = form_html_prof
-        }
-        else {
-          open_prof = false 
-          document.getElementById("prof").innerHTML = "prof"
-        }
-      }
-      
-      var open_admin = false
-      
-      function admin_open_close() {
-        if (open_admin == false){
-          open_admin = true
-          document.getElementById("admin").innerHTML = form_html_admin
-        }
-        else {
-          open_admin = false 
-          document.getElementById("admin").innerHTML = "admin"
-        }
-      }
-        
-        
-    </script>
-   
-   
-   
-    <style>
-      
-      .profil { 
-        background-color: rgb(218, 221, 255);
-        margin: 10px;
-      }
-      
-    </style>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion — Ectoplasme</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='connexion.css') }}">
 </head>
-  
-  
-  
 <body>
-  
-  <h1>bienvenue</h1>
-  
-  <div class = "profil" id = "eleve" onclick =  "eleve_open_close()" >eleve</div>
-  
-  <div class = "profil" id = "prof"  onclick =  "prof_open_close()" >prof</div>
-  
-  <div class = "profil" id = "admin" onclick =  "admin_open_close()">admin</div>
+  {% if (lang or "fr") == "en" %}
+    {% set t = {
+      "welcome": "Welcome",
+      "subtitle": "Choose your login profile",
+      "student": "Student",
+      "teacher": "Teacher",
+      "admin": "Admin",
+      "email": "Email address",
+      "password": "Password",
+      "language": "Language",
+      "login": "Log in",
+      "project": "Ectoplasme Project"
+    } %}
+  {% else %}
+    {% set t = {
+      "welcome": "Bienvenue",
+      "subtitle": "Choisissez votre profil de connexion",
+      "student": "Élève",
+      "teacher": "Prof",
+      "admin": "Admin",
+      "email": "Adresse e-mail",
+      "password": "Mot de passe",
+      "language": "Langue",
+      "login": "Se connecter",
+      "project": "Projet Ectoplasme"
+    } %}
+  {% endif %}
 
+  <main class="page">
+    <section class="card">
+
+      <header class="header">
+        <h1>{{ t.welcome }}</h1>
+        <p class="subtitle">{{ t.subtitle }}</p>
+      </header>
+
+      <div class="profiles">
+
+        <button class="profil" id="btn-eleve" type="button" aria-expanded="false" aria-controls="panel-eleve">
+          {{ t.student }}
+          <span class="chev" aria-hidden="true">▾</span>
+        </button>
+
+        <div class="panel" id="panel-eleve" hidden>
+          <form class="form" method="POST" action="/connexion">
+            <input type="hidden" name="role" value="eleve">
+            <input type="hidden" name="lang" id="lang-eleve" value="{{ lang or 'fr' }}">
+
+            <div class="field">
+              <label for="email-eleve">{{ t.email }}</label>
+              <input id="email-eleve" name="email" type="email" placeholder="x.nomXX@ejm.org" required>
+            </div>
+
+            <div class="field">
+              <label for="pwd-eleve">{{ t.password }}</label>
+              <input id="pwd-eleve" name="password" type="password" placeholder="••••••••" required>
+            </div>
+
+            <div class="field">
+              <label>{{ t.language }}</label>
+              <div class="lang" data-target="lang-eleve">
+                <button type="button" class="lang__btn {% if (lang or 'fr') == 'fr' %}is-active{% endif %}" data-lang="fr" aria-label="Français">🇫🇷</button>
+                <button type="button" class="lang__btn {% if (lang or 'fr') == 'en' %}is-active{% endif %}" data-lang="en" aria-label="English">🇬🇧</button>
+              </div>
+            </div>
+
+            <button class="btn" type="submit">{{ t.login }}</button>
+          </form>
+        </div>
+
+        <button class="profil" id="btn-prof" type="button" aria-expanded="false" aria-controls="panel-prof">
+          {{ t.teacher }}
+          <span class="chev" aria-hidden="true">▾</span>
+        </button>
+
+        <div class="panel" id="panel-prof" hidden>
+          <form class="form" method="POST" action="/connexion">
+            <input type="hidden" name="role" value="prof">
+            <input type="hidden" name="lang" id="lang-prof" value="{{ lang or 'fr' }}">
+
+            <div class="field">
+              <label for="email-prof">{{ t.email }}</label>
+              <input id="email-prof" name="email" type="email" placeholder="x.nom@ejm.net" required>
+            </div>
+
+            <div class="field">
+              <label for="pwd-prof">{{ t.password }}</label>
+              <input id="pwd-prof" name="password" type="password" placeholder="••••••••" required>
+            </div>
+
+            <div class="field">
+              <label>{{ t.language }}</label>
+              <div class="lang" data-target="lang-prof">
+                <button type="button" class="lang__btn {% if (lang or 'fr') == 'fr' %}is-active{% endif %}" data-lang="fr" aria-label="Français">🇫🇷</button>
+                <button type="button" class="lang__btn {% if (lang or 'fr') == 'en' %}is-active{% endif %}" data-lang="en" aria-label="English">🇬🇧</button>
+              </div>
+            </div>
+
+            <button class="btn" type="submit">{{ t.login }}</button>
+          </form>
+        </div>
+
+        <button class="profil" id="btn-admin" type="button" aria-expanded="false" aria-controls="panel-admin">
+          {{ t.admin }}
+          <span class="chev" aria-hidden="true">▾</span>
+        </button>
+
+        <div class="panel" id="panel-admin" hidden>
+          <form class="form" method="POST" action="/connexion">
+            <input type="hidden" name="role" value="admin">
+            <input type="hidden" name="lang" id="lang-admin" value="{{ lang or 'fr' }}">
+
+            <div class="field">
+              <label for="email-admin">{{ t.email }}</label>
+              <input id="email-admin" name="email" type="email" placeholder="admin@ejm.net" required>
+            </div>
+
+            <div class="field">
+              <label for="pwd-admin">{{ t.password }}</label>
+              <input id="pwd-admin" name="password" type="password" placeholder="••••••••" required>
+            </div>
+
+            <div class="field">
+              <label>{{ t.language }}</label>
+              <div class="lang" data-target="lang-admin">
+                <button type="button" class="lang__btn {% if (lang or 'fr') == 'fr' %}is-active{% endif %}" data-lang="fr" aria-label="Français">🇫🇷</button>
+                <button type="button" class="lang__btn {% if (lang or 'fr') == 'en' %}is-active{% endif %}" data-lang="en" aria-label="English">🇬🇧</button>
+              </div>
+            </div>
+
+            <button class="btn" type="submit">{{ t.login }}</button>
+          </form>
+        </div>
+
+      </div>
+
+      {% if error %}
+        <div class="alert" role="alert">{{ error }}</div>
+      {% endif %}
+
+      <footer class="footer">
+        <small>{{ t.project }}</small>
+      </footer>
+
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='connexion.js') }}"></script>
 </body>
 </html>
-

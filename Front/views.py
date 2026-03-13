@@ -5,8 +5,8 @@ from flask import Flask, render_template, request, redirect, url_for, g, session
 
 app = Flask(
     __name__,
-    template_folder="Templates",
-    static_folder="Styles",
+    template_folder="templates",
+    static_folder="static",
     static_url_path="/static"
 )
 app.secret_key = "ectoplasme_secret"
