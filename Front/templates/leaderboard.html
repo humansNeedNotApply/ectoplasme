@@ -9,7 +9,23 @@
   <h1>Classement/Leaderboard</h1>
   
   
-  <div id = "hidden" name = "hidden" >variable 'classe'</div>
+  <div>
+    <tr>
+      {% if (lang == "fr") %}
+      <th>Classe</th>
+      <th>Score Total</th>
+      <th>Score Moyen</th>  
+      {% endif %}
+    </tr>
+
+    <tr>
+      {% for x in eleves %}
+      <td>
+        
+      </td>
+      {% endfor %}
+    </tr>
+  </div>
   
   <script>
     

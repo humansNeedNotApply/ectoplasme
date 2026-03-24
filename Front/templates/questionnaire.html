@@ -10,15 +10,9 @@ const dict_question1 = {id_question: 1, intitule: 'blabla1', liste_reponse: [1, 
 const dict_question2 = {id_question: 2, intitule: 'blabla2', liste_reponse: ['bjr', 'caca', 'bla', 'blyat'], explication: 'caca'};
 const ldq = [{% for i in range(questions_lang | length) %}
             {% if i == 0 %}
-<<<<<<< HEAD
-                {id_question: "{{questions_lang[i]['id_question']}}", intitule: "{{questions_lang[i]['intitule']}}", liste_reponse: "{{questions_lang[i]['liste_reponses']}}", explication: "{{questions_lang[i]['explication']}}" }
-            {% endif %} {% if i != 0 %}
-                ,{id_question: "{{questions_lang[i]['id_question']}}", intitule: "{{questions_lang[i]['intitule']}}", liste_reponse: "{{questions_lang[i]['liste_reponses']}}", explication: "{{questions_lang[i]['explication']}}" }   
-=======
                 {id_question: "{{questions_lang[i]['id_question']}}", intitule: "{{questions_lang[i]['intitule']}}", liste_reponse: "{{questions_lang[i]['liste_reponse']}}", explication: "{{questions_lang[i]['explication']}}" }
             {% endif %} {% if i != 0 %}
                 ,{id_question: "{{questions_lang[i]['id_question']}}", intitule: "{{questions_lang[i]['intitule']}}", liste_reponse: "{{questions_lang[i]['liste_reponse']}}", explication: "{{questions_lang[i]['explication']}}" }   
->>>>>>> 7624da57aa51783d3886661be2834030cf63659d
             {% endif %} {% endfor %}];
 
 // ldq = liste dict questions, ce sera la liste de dictionaires recue du python
@@ -29,11 +23,7 @@ const ldq = [{% for i in range(questions_lang | length) %}
 function generer_quiz() {
 let k = 0;
 while (k <= ldq.length + 1) {
-<<<<<<< HEAD
-   document.write("<div id = 'question "+ ldq[k].id_question + "'><form> <h2>Question numero " + (k+1)  + "</h2><p>" + ldq[k].intitule + " </p><form>");
-=======
    document.write("<div id = 'question "+ ldq[k].id_question + "'><form> <h2>Question numero " + (k + 1) + "</h2><p>" + ldq[k].intitule + " </p><form>");
->>>>>>> 7624da57aa51783d3886661be2834030cf63659d
    let ix = 0
    while (ix < ldq[k].liste_reponse.length) {
       let i = ldq[k].liste_reponse[ix]
@@ -47,15 +37,11 @@ while (k <= ldq.length + 1) {
 
 generer_quiz()
 
-<<<<<<< HEAD
-    </script>  
-=======
     </script>
 
     <head>
         <meta charset = 'utf-8'>
     </head>
->>>>>>> 7624da57aa51783d3886661be2834030cf63659d
   
 <body>
     <p></p>

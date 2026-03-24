@@ -62,9 +62,11 @@ def resultats():
 
 @app.route('/leaderboard')
 def leaderboard():
-    if (request.args.get("lang") == "fr"):
-        eleves = [{'prenom': x['prenom'], 'nom': x['nom'], 'classe': query_db("SELECT niveau, numéro FROM " )}]
-
+    eleves = []
+    for x in query_db("SELECT * FROM Elèves"):
+        classes = query_db("SELECT niveau, numéro FROM Classes JOIN ON Elèves WHERE Classes.id_classe = Elèves.id_classe")
+        eleves += {'prenom': x['prenom'], 'nom': x['nom'], 'classe': classes['niveau'] + ' ' + classes['numéro']}
+    return render_template("leaderboard.html", eleves=eleves)
 
 @app.get("/connexion")
 def connexion_get():
