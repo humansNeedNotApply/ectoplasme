@@ -26,7 +26,9 @@ while (k <= ldq.length + 1) {
    document.write("<div id = 'question "+ ldq[k].id_question + "'><form> <h2>Question numero " + (k + 1) + "</h2><p>" + ldq[k].intitule + " </p><form>");
    let ix = 0
    while (ix < ldq[k].liste_reponse.length) {
-      let i = ldq[k].liste_reponse[ix]
+      let str_uncut = ldq[k].liste_reponse ;
+      let str_cut = str_uncut.split(",");
+      let i = str_cut[ix]
       document.write("<input type='radio' id="+ ix +" name="+ k +" value="+ ix +"> <label for= "+ ix +"> "+ i + "</label><br>");
       ix++
    };
