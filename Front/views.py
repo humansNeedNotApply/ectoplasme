@@ -43,7 +43,6 @@ def close_connection(exception):
 def questionnaire():
     quest_req = query_db("SELECT * FROM Questions")
     questions = [{'id_question': x['id_question'], 'liste_niveaux': x['liste_niveaux'], 'indice_reponse': x['indice_reponse']} for x in quest_req]
-    print(questions)
 
     if (request.args.get("lang") == "fr"):
         questions_lang = [{'id_question': x['id_question'], 'intitule': x['intitule'], 'liste_reponses': x['liste_reponses'], 'explication': x['explication']} for x in query_db("SELECT * FROM Questions_FR")]
@@ -66,6 +65,7 @@ def leaderboard():
     for x in query_db("SELECT * FROM Elèves"):
         classes = query_db("SELECT niveau, numéro FROM Classes JOIN ON Elèves WHERE Classes.id_classe = Elèves.id_classe")
         eleves += {'prenom': x['prenom'], 'nom': x['nom'], 'classe': classes['niveau'] + ' ' + classes['numéro']}
+    print(eleves)
     return render_template("leaderboard.html", eleves=eleves)
 
 @app.get("/connexion")
