@@ -76,7 +76,17 @@ def leaderboard():
         classes = query_db("SELECT niveau, numéro FROM Classes JOIN ON Elèves WHERE Classes.id_classe = Elèves.id_classe")
         eleves += {'prenom': x['prenom'], 'nom': x['nom'], 'classe': classes['niveau'] + ' ' + classes['numéro'], 'meilleur_score': x['meilleur_score']}
     json_eleves = json.dump(eleves)
+    return render_template("leaderboard.html", classes=classes eleves=eleves, json_eleves = json_eleves)
+
+@app.route('/dashboard_prof')
+def dashboard_prof():
+    eleves = []
+    for x in query_db("SELECT * FROM Elèves"):
+        classes = query_db("SELECT niveau, numéro FROM Classes JOIN ON Elèves WHERE Classes.id_classe = Elèves.id_classe")
+        eleves += {'prenom': x['prenom'], 'nom': x['nom'], 'classe': classes['niveau'] + ' ' + classes['numéro'], 'meilleur_score': x['meilleur_score']}
+    json_eleves = json.dump(eleves)
     return render_template("leaderboard.html", eleves=eleves, json_eleves = json_eleves)
+    
 
 @app.route('/dashboard_admin')#
 def dashboard_admin():
