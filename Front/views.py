@@ -59,7 +59,6 @@ def questionnaire():
         questions_lang = [{'id_question': x['id_question'], 'intitule': x['intitule'], 'liste_reponses': x['liste_reponses'], 'explication': x['explication']} for x in query_db("SELECT * FROM Questions_FR")]
     else:
         questions_lang = [{'id_question': x['id_question'], 'intitule': x['intitule'], 'liste_reponses': x['liste_reponses'], 'explication': x['explication']} for x in query_db("SELECT * FROM Questions_EN")]
-    print(questions_lang)
     return render_template("questionnaire.html", questions=questions, questions_lang=questions_lang)
 
 
@@ -119,7 +118,7 @@ def connexion_post():
     if not role or not email or not password:
         return render_template("access.html", error="Champs manquants.", lang=lang)
 
-    return #redirect(url_for("questionnaire"))
+    return redirect(url_for("questionnaire"))
 
 
 
