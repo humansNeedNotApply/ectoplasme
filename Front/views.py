@@ -118,7 +118,7 @@ def connexion_post():
     if not role or not email or not password:
         return render_template("access.html", error="Champs manquants.", lang=lang)
 
-    return f"Ok pour role={role}, email={email}, lang={lang}"
+    return #redirect(url_for("questionnaire"))
 
 
 
