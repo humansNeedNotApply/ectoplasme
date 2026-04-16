@@ -15,14 +15,6 @@ app.secret_key = "ectoplasme_secret"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATABASE = os.path.join(BASE_DIR, "..", "Back", "ectoplase_bdr.db")
 
-def get_db():
-    db = getattr(g, "_database", None)
-    if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-        db.row_factory = sqlite3.Row
-    return db
-
-
 @app.route('/questionnaire')
 def questionnaire():
     quest_req = back.query_db("SELECT * FROM Questions")
