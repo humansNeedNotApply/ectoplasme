@@ -2,7 +2,7 @@ import os
 import sqlite3
 import json
 from flask import Flask, render_template, request, redirect, url_for, g, session
-
+import back
 
 
 app = Flask(
@@ -23,27 +23,9 @@ def get_db():
     return db
 
 
-def query_db(query, args=(), one=False):
-    cur = get_db().execute(query, args)
-    rv = cur.fetchall()
-    cur.close()
-    return (rv[0] if rv else None) if one else rv
-
-def change_db(query, args=()):
-    cur = get_db().execute(query, args)
-    get_db().commit()
-    cur.close()
-
-@app.teardown_appcontext
-def close_connection(exception):
-    db = getattr(g, "_database", None)
-    if db is not None:
-        db.close()
-
-
 @app.route('/questionnaire')
 def questionnaire():
-    quest_req = query_db("SELECT * FROM Questions")
+    quest_req = back.query_db("SELECT * FROM Questions")
     questions = [{'id_question': x['id_question'], 'liste_niveaux': x['liste_niveaux'], 'indice_reponse': x['indice_reponse']} for x in quest_req]
 
     if request.form.get(""):
@@ -56,9 +38,9 @@ def questionnaire():
             return render_template("access.html", error="Champs manquants.", lang=lang)
 
     if (request.form.get("lang", "fr")):
-        questions_lang = [{'id_question': x['id_question'], 'intitule': x['intitule'], 'liste_reponses': x['liste_reponses'], 'explication': x['explication']} for x in query_db("SELECT * FROM Questions_FR")]
+        questions_lang = [{'id_question': x['id_question'], 'intitule': x['intitule'], 'liste_reponses': x['liste_reponses'], 'explication': x['explication']} for x in back.query_db("SELECT * FROM Questions_FR")]
     else:
-        questions_lang = [{'id_question': x['id_question'], 'intitule': x['intitule'], 'liste_reponses': x['liste_reponses'], 'explication': x['explication']} for x in query_db("SELECT * FROM Questions_EN")]
+        questions_lang = [{'id_question': x['id_question'], 'intitule': x['intitule'], 'liste_reponses': x['liste_reponses'], 'explication': x['explication']} for x in back.query_db("SELECT * FROM Questions_EN")]
     return render_template("questionnaire.html", questions=questions, questions_lang=questions_lang)
 
 
@@ -72,8 +54,8 @@ def resultats():
 @app.route('/leaderboard')
 def leaderboard():
     eleves = []
-    for x in query_db("SELECT * FROM Elèves"):
-        classes = query_db("SELECT niveau, numéro FROM Classes JOIN ON Elèves WHERE Classes.id_classe = Elèves.id_classe")
+    for x in back.query_db("SELECT * FROM Elèves"):
+        classes = back.query_db("SELECT niveau, numéro FROM Classes JOIN ON Elèves WHERE Classes.id_classe = Elèves.id_classe")
         eleves += {'prenom': x['prenom'], 'nom': x['nom'], 'classe': classes['niveau'] + ' ' + classes['numéro'], 'meilleur_score': x['meilleur_score']}
     json_eleves = json.dump(eleves)
     return render_template("leaderboard.html", classes=classes, eleves=eleves, json_eleves = json_eleves)
@@ -81,8 +63,8 @@ def leaderboard():
 @app.route('/dashboard_prof')
 def dashboard_prof():
     eleves = []
-    for x in query_db("SELECT * FROM Elèves"):
-        classes = query_db("SELECT niveau, numéro FROM Classes JOIN ON Elèves WHERE Classes.id_classe = Elèves.id_classe")
+    for x in back.query_db("SELECT * FROM Elèves"):
+        classes = back.query_db("SELECT niveau, numéro FROM Classes JOIN ON Elèves WHERE Classes.id_classe = Elèves.id_classe")
         eleves += {'prenom': x['prenom'], 'nom': x['nom'], 'classe': classes['niveau'] + ' ' + classes['numéro'], 'meilleur_score': x['meilleur_score']}
     json_eleves = json.dump(eleves)
     return render_template("leaderboard.html", eleves=eleves, json_eleves = json_eleves)
@@ -90,7 +72,7 @@ def dashboard_prof():
 
 @app.route('/dashboard_admin')#
 def dashboard_admin():
-    data = query_db()
+    data = back.query_db()
 
 @app.get("/connexion")
 def connexion_get():
