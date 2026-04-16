@@ -22,24 +22,28 @@ const ldq = [{% for i in range(questions_lang | length) %}
 
 function generer_quiz() {
 let k = 0;
-document.write("<form method = 'POST' action = '/questionnaire'">);
+document.write("<form method = 'POST' action = '/questionnaire'>");
 while (k <= ldq.length + 1) {
-   document.write("<div id = 'question "+ ldq[k].id_question + "'><fieldset value = " k " id = 'ques> <h2>Question numero " + (k + 1) + "</h2><p>" + ldq[k].intitule + " </p><form>");
-   let ix = 0
-   let str_uncut = ldq[k].liste_reponse ;
+
+   document.write("<div id = 'question " + ldq[k].id_question + "'><fieldset value = " + k + " id = 'ques> <h2>Question numero " + (k + 1) + "</h2><p>" + ldq[k].intitule + " </p><form>");
+
+   let ix = 0;
+   let str_uncut = ldq[k].liste_reponse;
    let str_cut = str_uncut.split(",");
+
    while (ix < str_cut.length) {  
-      let i = str_cut[ix]
-      document.write("<input type='radio' id=' "+ 'question_' + k + '_reponse_' + ix +" ' name= ' "+ k +" 'value= "+ ix +"> <label for= "+ ix +"> "+ k + "</label><br>");
-      ix++
+      let i = str_cut[ix];
+      document.write("<input type='radio' id=' "+ 'question_' + k + '_reponse_' + ix +" ' name= ' "+ k +" 'value= "+ ix +
+      "> <label for= "+ ix +"> "+ i + "</label><br>");
+      ix++;
    };
    document.write("</fieldset></div>");
    k++;
 };
-document.write("</form>")
+document.write("</form>");
 };
 
-generer_quiz()
+generer_quiz();
 
     </script>
 
