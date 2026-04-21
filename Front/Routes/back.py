@@ -4,7 +4,7 @@ import json
 from flask import Flask, render_template, request, redirect, url_for, g, session
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATABASE = os.path.join(BASE_DIR, "..", "Back", "ectoplase_bdr.db")
+DATABASE = os.path.join(BASE_DIR, "..", "..", "Back", "ectoplase_bdr.db")
 
 def get_db():
     db = getattr(g, "_database", None)
