@@ -82,7 +82,7 @@ def leaderboard():
         SELECT e.prenom, e.nom, c.niveau, c.numéro,
                COALESCE(e.meilleur_score, 0) AS meilleur_score,
                COALESCE(e.nb_tentatives, 0)  AS nb_tentatives
-        FROM "Élèves" e
+        FROM "Elèves" e
         JOIN Classes c ON e.id_classe = c.id_classe
         ORDER BY meilleur_score DESC
     """)
@@ -96,7 +96,7 @@ def dashboard_prof():
         SELECT e.prenom, e.nom, c.niveau, c.numéro,
                COALESCE(e.meilleur_score, 0) AS meilleur_score,
                COALESCE(e.nb_tentatives, 0)  AS nb_tentatives
-        FROM "Élèves" e
+        FROM "Elèves" e
         JOIN Classes c ON e.id_classe = c.id_classe
         ORDER BY meilleur_score DESC
     """)
@@ -106,7 +106,7 @@ def dashboard_prof():
 @app.route('/dashboard_admin')
 def dashboard_admin():
     lang = session.get("lang", "fr")
-    eleves = back.query_db('SELECT * FROM "Élèves"')
+    eleves = back.query_db('SELECT * FROM "Elèves"')
     return render_template("leaderboard.html", eleves=eleves, lang=lang)
 
 
