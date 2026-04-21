@@ -1,0 +1,98 @@
+<html>
+
+
+<body>
+
+
+<div id = 'div_infos_classe'>
+    <p>Votre classe:</p>
+</div>
+
+
+<form id = "get_info_eleve">
+    séléctionnez un élève pour voir ses données.
+    <select id = "select_eleves" name = "select_eleves"> 
+        selectionnez une option.
+        <option>option vide</option>
+
+
+    </select>
+
+    <input type = 'submit' value = 'Submit'>
+
+</form>
+
+
+<div id = 'div_infos_eleves'>
+     <p> Aucun élève séléctionné. </p> 
+</div>
+
+</body>
+
+
+<script>
+
+// définition des objets json
+
+let obj_obj_eleves = '{ "eleves" : [' +
+'{ "id_eleve": "23", "prenom":"John" , "nom":"silksong", "id_classe": "61", "meilleur_score": "5648", "mdp": "4684846", "nb_tentatives": "156" },' +
+'{ "id_eleve": "23", "prenom":"John" , "nom":"Doe", "id_classe": "61", "meilleur_score": "5648", "mdp": "4684846", "nb_tentatives": "156"},' +
+'{ "id_eleve": "23", "prenom":"John" , "nom":"deltarune", "id_classe": "61", "meilleur_score": "5648", "mdp": "4684846", "nb_tentatives": "156" } ]}'; 
+
+const obj_eleves = JSON.parse(obj_obj_eleves); 
+
+let obj_classe = ' { "classes": ['   +
+'{ "id_classe": "61", "niveau": "6" , "numéro": "1" }' +
+']  } ' ;
+
+const classe = JSON.parse(obj_classe);
+
+
+//définition des fonctions miscellaneous
+
+function stats_classe() {
+    var total_points = 0;
+    for (let d in obj_eleves["eleves"]) {
+        total_points += obj_eleves["eleves"]["meilleur_score"]
+    };
+    var moyenne_points = total_points / length(obj_eleves["eleves"]) ; // man i'm doing all of this with no internet wtf do i do HOW DO I FIND THE LENGTDSSQJL
+    return [total_points, moyenne_points]
+};
+
+function pourcentage_reussite(question) {
+  //idkidkidkidkidkidkidkidkidkkkkk
+};
+
+// um
+
+for (let d in obj_eleves["eleves"]) {
+   //console.log(obj_eleves["eleves"][d]["prenom"] + ' ' + obj_eleves["eleves"][d]["nom"]);
+   //console.log(d)
+   var opt = document.createElement('option'); 
+   opt.innerHTML = '<option value = ' 
+   + d + 
+   '>' + 
+   d + ' ' +
+   obj_eleves["eleves"][d]["prenom"] + 
+   ' ' + 
+   obj_eleves["eleves"][d]["nom"]  + 
+   '</option>';
+   document.getElementById("select_eleves").appendChild(opt);
+};
+
+document.getElementById('get_info_eleve').addEventListener('submit', function(event) {
+    var result = document.getElementById("select_eleves").value;
+    const n = result[0];
+    console.log(n);
+    var text = '<p>' + n + '</p>';
+    document.getElementById('div_infos_eleves').innerHTML = text;
+    
+} );
+
+
+
+</script>
+
+
+
+</html>
