@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <form action="/resultats" method="post" class="questionnaire"></form>
+
+    <script>
+        const formulaire = document.querySelector(".questionnaire");
+
+        fetch("/data/questions")
+            .then(response => response.json())
+            .then(data => {
+                data.questions.forEach(question => {
+                    const bloc = document.createElement("fieldset");
+
+                    const label = document.createElement("legend");
+                    label.textContent = question.intitule;
+                    bloc.appendChild(label);
+
+                    question.liste_reponses.forEach((reponse, i) => {
+                        const input = document.createElement("input");
+                        input.type = "radio";
+                        input.name = question.id_question;
+                        input.id = question.id_question + "_" + reponse;
+                        input.value = i;
+
+                        const reponseLabel = document.createElement("label");
+                        reponseLabel.htmlFor = input.id;
+                        reponseLabel.textContent = reponse;
+
+                        bloc.appendChild(input);
+                        bloc.appendChild(reponseLabel);
+                        bloc.appendChild(document.createElement("br"))
+                    });
+
+                    formulaire.appendChild(bloc);
+                });
+                
+                const submit = document.createElement("button")
+                submit.type = "submit"
+                submit.class = "btn submit"
+                submit.textContent = "Submit"
+                
+                formulaire.appendChild(submit)
+            })
+            .catch(error => console.error("Erreur lors du chargement des questions :", error));
+    </script>
+</body>
+</html>

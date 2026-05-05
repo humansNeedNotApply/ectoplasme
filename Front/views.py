@@ -1,10 +1,11 @@
 import os
 import sqlite3
 import json
-from flask import Flask, render_template, request, redirect, url_for, g, session
+from flask import Flask, render_template, request, redirect, url_for, g, session, jsonify
 import Routes.back as back
 
 
+FIX_TEMPORAIRE = 'AND Questions.id_question < 17'
 AUTH_ACTIVE = True
 
 app = Flask(
@@ -17,8 +18,37 @@ app.secret_key = "ectoplasme_secret"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATABASE = os.path.join(BASE_DIR, "..", "Back", "ectoplase_bdr.db")
 
+# Recuperation de données
+
+@app.get("/data/eleve/<id>")
+def get_data_eleve(id):
+    if session.get("role", None) not in ["prof", "admin"] and session.get("id", -1) != id:
+        return redirect(url_for("connexion"))
+    quest_req = back.query_db(f"SELECT * FROM Elèves JOIN Classes ON Classes.id_classe = Elèves.id_classe WHERE id_eleve='{id}'")
+    return quest_req[0]
+
+@app.get("/data/questions/<niveau>")
+def get_data_questions_niveau(niveau):
+    lang = session.get("lang", "fr")
+    table = "Questions_FR" if lang == "fr" else "Questions_EN"
+    quest_req = back.query_db(f"SELECT * FROM Questions JOIN {table} ON {table}.id_question = Questions.id_question WHERE liste_niveaux LIKE '%{niveau}%' {FIX_TEMPORAIRE}")
+    questions = [{'id_question': x['id_question'], 'liste_niveaux': x['liste_niveaux'], 'indice_reponse': x['indice_reponse'], 'intitule': x['intitule'], 'liste_reponses': [r.strip() for r in x['liste_reponses'].split(',')], 'explication': x['explication']} for x in quest_req]
+    
+    return jsonify({"questions" : questions})
+
+
+@app.get("/data/questions")
+def get_data_questions():
+    id = session["id"]
+    donnesEleve = get_data_eleve(id)
+
+    return get_data_questions_niveau(donnesEleve["niveau"])
+
+# Route affichant des pages
+
 @app.get("/connexion")
 def connexion_get():
+
     lang = session.get("lang", "fr")
     return render_template("access.html", error=None, lang=lang)
 
@@ -40,29 +70,40 @@ def connexion_post():
         return render_template("access.html", error="Champs manquants. Missing input fields.", lang=lang)
     
     # logique d'authentification
+    session["role"] = role
     if not AUTH_ACTIVE:
         return redirect(url_for("questionnaire"))
     if role == "eleve":
-        quest_req = back.query_db(f"SELECT mdp FROM Elèves WHERE email='{email}'")
+        quest_req = back.query_db(f"SELECT mdp, id_eleve FROM Elèves WHERE email='{email}'")
         mdpCorrecte = quest_req[0]["mdp"]
+        id = quest_req[0]["id_eleve"]
         if password == mdpCorrecte:
+            session["id"] = id
             return redirect(url_for("questionnaire"))
         else:
+            session["role"] = None
             return render_template("access.html", error="Mot de Passe Incorrecte. Incorrect Password.", lang=lang)
     if role == "prof":
-        quest_req = back.query_db(f"SELECT mdp FROM Profs WHERE email='{email}'")
+        quest_req = back.query_db(f"SELECT mdp, id_prof FROM Profs WHERE email='{email}'")
         mdpCorrecte = quest_req[0]["mdp"]
+        id = quest_req[0]["id_prof"]
         if password == mdpCorrecte:
             return redirect(url_for("dashboard_prof"))
         else:
+            session["role"] = None
             return render_template("access.html", error="Mot de Passe Incorrecte. Incorrect Password.", lang=lang)
     if role == "admin":
-        quest_req = back.query_db(f"SELECT mdp FROM Admin WHERE email='{email}'")
+        quest_req = back.query_db(f"SELECT mdp, id_admin FROM Admin WHERE email='{email}'")
         mdpCorrecte = quest_req[0]["mdp"]
+        id = quest_req[0]["id_admin"]
         if password == mdpCorrecte:
+            session["id"] = id
             return redirect(url_for("dashboard_admin"))
         else:
+            session["role"] = None
             return render_template("access.html", error="Mot de Passe Incorrecte. Incorrect Password.", lang=lang)
+    
+    session["role"] = None
     return render_template("access.html", error="Type d'utilisateur non reconnu. Unrecognizable user type.", lang=lang)
 
 
@@ -74,6 +115,9 @@ def index():
 
 @app.route('/questionnaire')
 def questionnaire():
+    id = session["id"]
+    donnesEleve = get_data_eleve(id)
+
     quest_req = back.query_db("SELECT * FROM Questions")
     questions = [{'id_question': x['id_question'], 'liste_niveaux': x['liste_niveaux'], 'indice_reponse': x['indice_reponse']} for x in quest_req]
     lang = session.get("lang", "fr")
@@ -82,27 +126,45 @@ def questionnaire():
     else:
         questions_lang = [{'id_question': x['id_question'], 'intitule': x['intitule'], 'liste_reponses': [r.strip() for r in x['liste_reponses'].split(',')], 'explication': x['explication']} for x in back.query_db("SELECT * FROM Questions_EN")]
 
-    return render_template("questionnaire.html", questions=questions, questions_lang=questions_lang)
+    # return render_template("questionnaire.html", questions=questions, questions_lang=questions_lang)
+    return render_template("questionnaire2.html")
 
 
 @app.route('/resultats', methods=['POST'])
 def resultats():
     lang = session.get("lang", "fr")
-    reponses_json = request.form.get("reponses", "{}")
-    try:
-        reponses = json.loads(reponses_json)
-    except json.JSONDecodeError:
-        reponses = {}
+    reponses = request.form
+    
 
-    questions = back.query_db("SELECT id_question, indice_reponse FROM Questions")
+    questions = get_data_questions().get_json()["questions"]
+
+    print(reponses.get("1"))
     total = len(questions)
     score = 0
     for q in questions:
-        if reponses.get(str(q["id_question"])) == q["indice_reponse"] - 1:
+        print(reponses.get(str(q["id_question"])), q["indice_reponse"] - 1)
+        if reponses.get(str(q["id_question"])) == str(q["indice_reponse"] - 1):
             score += 1
 
     pourcentage = round((score / total * 100) if total else 0)
-    return render_template("resultats.html", score=score, total=total, pourcentage=pourcentage, meilleur_score=score, lang=lang)
+
+    id = session["id"]
+    donnesEleve = get_data_eleve(id)
+
+    nbTentatives = donnesEleve["nb_tentatives"]
+    if not isinstance(nbTentatives, int):
+        nbTentatives = 0
+    nbTentatives += 1
+    back.change_db(f"UPDATE Elèves SET nb_tentatives={nbTentatives} WHERE id_eleve={id}")
+
+    meilleur_score = donnesEleve["meilleur_score"]
+    if not isinstance(meilleur_score, int):
+        meilleur_score = 0
+    if score > meilleur_score:
+        meilleur_score = score
+        back.change_db(f"UPDATE Elèves SET meilleur_score={score} WHERE id_eleve={id}")
+
+    return render_template("resultats.html", score=score, total=total, pourcentage=pourcentage, meilleur_score=meilleur_score, lang=lang)
 
 
 @app.route('/leaderboard')
