@@ -5,6 +5,8 @@ from flask import Flask, render_template, request, redirect, url_for, g, session
 import Routes.back as back
 
 
+AUTH_ACTIVE = True
+
 app = Flask(
     __name__,
     template_folder="templates",
@@ -35,8 +37,36 @@ def connexion_post():
     lang = request.form.get("lang", "fr")
     session["lang"] = lang
     if not role or not email or not password:
-        return render_template("access.html", error="Champs manquants.", lang=lang)
-    return redirect(url_for("questionnaire"))
+        return render_template("access.html", error="Champs manquants. Missing input fields.", lang=lang)
+    
+    # logique d'authentification
+    if not AUTH_ACTIVE:
+        return redirect(url_for("questionnaire"))
+    if role == "eleve":
+        quest_req = back.query_db(f"SELECT mdp FROM Elèves WHERE email='{email}'")
+        mdpCorrecte = quest_req[0]["mdp"]
+        if password == mdpCorrecte:
+            return redirect(url_for("questionnaire"))
+        else:
+            return render_template("access.html", error="Mot de Passe Incorrecte. Incorrect Password.", lang=lang)
+    if role == "prof":
+        quest_req = back.query_db(f"SELECT mdp FROM Profs WHERE email='{email}'")
+        mdpCorrecte = quest_req[0]["mdp"]
+        if password == mdpCorrecte:
+            return redirect(url_for("dashboard_prof"))
+        else:
+            return render_template("access.html", error="Mot de Passe Incorrecte. Incorrect Password.", lang=lang)
+    if role == "admin":
+        quest_req = back.query_db(f"SELECT mdp FROM Admin WHERE email='{email}'")
+        mdpCorrecte = quest_req[0]["mdp"]
+        if password == mdpCorrecte:
+            return redirect(url_for("dashboard_admin"))
+        else:
+            return render_template("access.html", error="Mot de Passe Incorrecte. Incorrect Password.", lang=lang)
+    return render_template("access.html", error="Type d'utilisateur non reconnu. Unrecognizable user type.", lang=lang)
+
+
+    
 
 @app.get("/")
 def index():
