@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin</title>
+    <style>
+        p{
+            display: inline;
+        }
+        .attribut-info{
+            margin-bottom: 16px;
+        }
+        .cache{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <select name="classe" id="classe-select">
+        <option value="">CHOISIR UNE CLASSE</option>
+        {% for classe in classes %}
+        <option value={{ classe.id_classe }}> {{ classe.niveau }} - {{ classe.numéro }} </option>
+        {% endfor %}
+    </select>
+    <button id="recupInfoBtn">Récupérer Info</button>
+
+    <div class="apres-selection cache">
+        
+        <form action="" method="post" id="classeForm">
+            <h3>Classe</h3>
+            <div class="attribut-info">
+                <label for="id-classe">identifiant de classe :</label>
+                <p id="id-classe"></p>
+            
+            </div>
+
+            <div class="attribut-info">
+                <label for="niveau">niveau de la classe : </label>
+                <input type="number" id="niveau">
+            
+            </div>
+
+            <div class="attribut-info">
+                <label for="numéro">numéro de la classe : </label>
+                <input type="number" id="numéro">
+            
+            </div>
+
+            <input type="submit" id="modif-classe" value="Modifier la classe">
+        </form>
+
+        <form action="" method="post" id="professeurForm">
+            <h3>Professeur</h3>
+            <div class="attribut-info">
+                <label for="id-prof">identifiant du Professeur : </label>
+                <p id="id-prof"></p>
+            </div>
+
+            <div class="attribut-info">
+                <label for="nom-prof">nom du Professeur : </label>
+                <input type="text" id="nom-prof"></input>
+            </div>
+
+            <div class="attribut-info">
+                <label for="prenom-prof">prenom du Professeur : </label>
+                <input type="text" id="prenom-prof"></input>
+            </div>
+
+            <div class="attribut-info">
+                <label for="email-prof">email du Professeur</label>
+                <input type="text" id="email-prof"></input>
+            </div>
+
+            <div class="attribut-info">
+                <label for="mdp-prof">mot de passe du Professeur</label>
+                <input type="text" id="mdp-prof"></input>
+            </div>
+            <input type="submit" id="modif-classe" value="Modifier les informations du Professeur">
+        </form>
+
+    </div>
+
+    <script>
+
+        select = document.querySelector("#classe-select")
+
+        document.querySelector("#recupInfoBtn").addEventListener("click", (e)=>{
+            
+            fetch(`/data/classe/${select.value}`)
+                .then(data => data.json())
+                .then(data => {
+                    document.querySelector(".apres-selection").classList.remove("cache")
+
+                    classeForm = document.querySelector("#classeForm")
+                    classeForm = classeForm.querySelectorAll(".attribut-info")
+                    classeForm[0].querySelector("p").textContent = data.classe.id_classe
+                    classeForm[1].querySelector("#niveau").value = data.classe.niveau
+                    classeForm[2].querySelector("#numéro").value = data.classe.numéro
+
+                    profForm = document.querySelector("#professeurForm")
+                    profForm = profForm.querySelectorAll(".attribut-info")
+                    profForm[0].querySelector("p").textContent = data.prof.id_prof
+                    let attibuts = ["id_prof", "nom", "prénom", "email", "mdp"]
+                    for(let i = 1; i < 5; i++){
+                        profForm[i].querySelector("input").value = data.prof[attibuts[i]]
+                    }
+
+
+                    
+                    // window.location.href = `/download/classe/${select.value}`
+                })
+
+            
+        })
+
+    </script>
+</body>
+</html>

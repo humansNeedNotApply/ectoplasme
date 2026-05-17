@@ -4,6 +4,8 @@ import json
 from flask import Flask, render_template, request, redirect, url_for, g, session, jsonify
 import Routes.back as back
 
+from Routes.adminRoute import get_admin_dashboard, download_data_eleves_classe_csv, get_data_classe_id
+
 
 FIX_TEMPORAIRE = 'AND Questions.id_question < 17'
 AUTH_ACTIVE = True
@@ -44,6 +46,14 @@ def get_data_questions():
 
     return get_data_questions_niveau(donnesEleve["niveau"])
 
+@app.get("/download/classe/<id>")
+def download_data_classe_csv(id):
+    return download_data_eleves_classe_csv(id)
+
+
+@app.get("/data/classe/<id>")
+def get_data_classe(id):
+    return jsonify(get_data_classe_id(id))
 # Route affichant des pages
 
 @app.get("/connexion")
@@ -197,9 +207,7 @@ def dashboard_prof():
 
 @app.route('/dashboard_admin')
 def dashboard_admin():
-    lang = session.get("lang", "fr")
-    eleves = back.query_db('SELECT * FROM "Elèves"')
-    return render_template("leaderboard.html", eleves=eleves, lang=lang)
+    return get_admin_dashboard()
 
 
 @app.route("/eleves")

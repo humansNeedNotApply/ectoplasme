@@ -2,21 +2,26 @@ import os
 import sqlite3
 import json
 from flask import Flask, render_template, request, redirect, url_for, g, session, make_response
-from back import query_db, change_db
+import Routes.back as back
 import csv
 import io
 
 def get_data_classes():
-    return query_db("SELECT * FROM Classes;")
+    return back.query_db("SELECT * FROM Classes;")
 
 def get_data_classe_id(id):
-    classe = query_db(f"SELECT * FROM Classes WHERE id_classe = {id};", one=True)
-    prof = query_db(f"SELECT * FROM Profs WHERE id_classe = {id};", one=True)
+    classe = back.query_db(f"SELECT * FROM Classes WHERE id_classe = {id};", one=True)
+    attributs = list(classe.keys())
+    classe = {attribut: classe[attribut] for attribut in attributs}
+
+    prof = back.query_db(f"SELECT * FROM Profs WHERE id_classe = {id};", one=True)
+    attributs = list(prof.keys())
+    prof = {attribut: prof[attribut] for attribut in attributs}
     
     return {"classe" : classe, "prof" : prof}
 
 def get_data_eleves_classe_csv(id):
-    eleves = query_db(f"SELECT * FROM Elèves WHERE id_classe = {id};")
+    eleves = back.query_db(f"SELECT * FROM Elèves WHERE id_classe = {id};")
 
     if not len(eleves):
         raise Exception("Il n'y a pas d'eleves dans cette classe")
@@ -40,4 +45,8 @@ def download_data_eleves_classe_csv(id):
     response.headers["Content-Type"] = "text/csv"
     return response
 
+def get_admin_dashboard():
+    classes = get_data_classes()
+
+    return render_template("admin.html", classes=classes)
     
