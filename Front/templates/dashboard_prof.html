@@ -11,6 +11,7 @@
 
 <form id = "get_info_eleve">
     séléctionnez un élève pour voir ses données.
+    <input name = "void" type = "text" value = "0" style = "display: none;">
     <select id = "select_eleves" name = "select_eleves"> 
         selectionnez une option.
         <option>option vide</option>
@@ -32,7 +33,15 @@
 
 <script>
 
+var text_in_div = ""
+var params = new URLSearchParams(document.URL)
+var val = params.get("select_eleves")[0];
+
+
+
 // définition des objets json
+
+
 
 let obj_obj_eleves = '{ "eleves" : [' +
 '{ "id_eleve": "23", "prenom":"John" , "nom":"silksong", "id_classe": "61", "meilleur_score": "5648", "mdp": "4684846", "nb_tentatives": "156" },' +
@@ -46,6 +55,8 @@ let obj_classe = ' { "classes": ['   +
 ']  } ' ;
 
 const classe = JSON.parse(obj_classe);
+
+
 
 
 //définition des fonctions miscellaneous
@@ -80,14 +91,10 @@ for (let d in obj_eleves["eleves"]) {
    document.getElementById("select_eleves").appendChild(opt);
 };
 
-document.getElementById('get_info_eleve').addEventListener('submit', function(event) {
-    var result = document.getElementById("select_eleves").value;
-    const n = result[0];
-    console.log(n);
-    var text = '<p>' + n + '</p>';
-    document.getElementById('div_infos_eleves').innerHTML = text;
-    
-} );
+
+if (val != null) 
+    text_in_div = obj_eleves["eleves"][val];
+    document.getElementById("div_infos_eleves").innerText = text_in_div;
 
 
 
